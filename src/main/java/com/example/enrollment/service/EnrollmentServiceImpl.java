@@ -45,7 +45,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Override
     public ResponseEntity<EnrollmentResponse> deleteProfile(EnrollmentTo enrollmentTo) throws EnrollmentException {
         try {
-            UserProfile profile = userProfileRepository.findByEmail(enrollmentTo.getEmail());
+            UserProfile profile = userProfileRepository.findByUname(enrollmentTo.getUname());
             if (null == profile) {
                 throw new EnrollmentException(HttpStatus.BAD_REQUEST.value(), "Invalid Email Address");
             }
@@ -64,7 +64,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
             byte[] salt = EnrollmentHasher.getSalt();
             String hashedPassword = EnrollmentHasher.getSecurePassword(enrollmentTo.getPwd(), salt);
-            UserProfile profile = userProfileRepository.findByEmail(enrollmentTo.getEmail());
+            UserProfile profile = userProfileRepository.findByUname(enrollmentTo.getUname());
             if (null == profile) {
                 throw new EnrollmentException(HttpStatus.BAD_REQUEST.value(), "Invalid Email Address");
             }
@@ -81,7 +81,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public ResponseEntity<EnrollmentResponse> updateProfile(EnrollmentTo enrollmentTo) throws EnrollmentException {
 
         try {
-            UserProfile profile = userProfileRepository.findByEmail(enrollmentTo.getEmail());
+        	UserProfile profile = userProfileRepository.findByUname(enrollmentTo.getUname());
             if (null == profile) {
                 throw new EnrollmentException(HttpStatus.BAD_REQUEST.value(), "Invalid Email Address");
             }

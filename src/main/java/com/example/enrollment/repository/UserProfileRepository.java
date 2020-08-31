@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile,Long> {
 
-    @Query("select u from UserProfile u where u.email=:email")
-    public UserProfile findByEmail(@Param("email") String email);
+    @Query("select u from UserProfile u where u.uname=:uname")
+    public UserProfile findByUname(@Param("uname") String uname);
 
     @Modifying
     @Query("update UserProfile u set u.hpwd=:hpwd, u.salt=:salt where u.id=:id")

@@ -32,25 +32,25 @@ public class EnrollmentController extends BaseController {
 
 
     @RequestMapping(value = "/profile/", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<EnrollmentResponse>  updateProfile(@Valid @RequestBody EnrollmentUpdateRequest enrollmentRequest, @NotBlank @Email @RequestParam(value="email",required =true) String email) throws EnrollmentException{
+    public ResponseEntity<EnrollmentResponse>  updateProfile(@Valid @RequestBody EnrollmentUpdateRequest enrollmentRequest, @NotBlank @RequestParam(value="uname",required =true) String uname) throws EnrollmentException{
         EnrollmentTo enrollmentTo =  new EnrollmentTo();
         BeanUtils.copyProperties(enrollmentRequest,enrollmentTo);
-        enrollmentTo.setEmail(email);
+        enrollmentTo.setUname(uname);
         return enrollmentService.updateProfile(enrollmentTo);
     }
 
     @RequestMapping(value = "/profile/", method = RequestMethod.DELETE, produces = "application/json")
-    public ResponseEntity<EnrollmentResponse>  deleteProfile(@NotBlank @Email @RequestParam(value="email", required = true) String email) throws EnrollmentException{
+    public ResponseEntity<EnrollmentResponse>  deleteProfile(@NotBlank @RequestParam(value="uname",required =true) String uname) throws EnrollmentException{
         EnrollmentTo enrollmentTo =  new EnrollmentTo();
-        enrollmentTo.setEmail(email);
+        enrollmentTo.setUname(uname);
         return enrollmentService.deleteProfile(enrollmentTo);
     }
 
     @RequestMapping(value = "/profile/creds/", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<EnrollmentResponse>  updatePassword(@Valid @RequestBody EnrollmentCredsRequest enrollmentRequest, @NotBlank @Email @RequestParam(value="email",required =true) String email) throws EnrollmentException{
+    public ResponseEntity<EnrollmentResponse>  updatePassword(@Valid @RequestBody EnrollmentCredsRequest enrollmentRequest, @NotBlank @RequestParam(value="uname",required =true) String uname) throws EnrollmentException{
         EnrollmentTo enrollmentTo =  new EnrollmentTo();
         BeanUtils.copyProperties(enrollmentRequest,enrollmentTo);
-        enrollmentTo.setEmail(email);
+        enrollmentTo.setUname(uname);
         return enrollmentService.updateProfile(enrollmentTo);
     }
 
