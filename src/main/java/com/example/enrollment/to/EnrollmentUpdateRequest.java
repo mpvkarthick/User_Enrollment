@@ -1,17 +1,16 @@
 package com.example.enrollment.to;
 
-import java.util.Date;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -19,23 +18,20 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EnrollmentUpdateRequest {
 
-	 	@NotBlank
-	    private String uname;
+    private String uname;
 
-	    private String fname;
+    private String fname;
 
-	    private String lname;
+    private String lname;
 
-	    private String gender;
+    private String gender;
 
-	    @DateTimeFormat(pattern = "yyyy-MM-dd")
-	    private Date dob;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date dob;
 
-	    @Email
-	    private String email;
+    @Email
+    private String email;
 
-	    private String imgUrl;
-
-
+    private String imgUrl;
 
 }

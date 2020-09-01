@@ -7,6 +7,7 @@ import com.example.enrollment.repository.UserProfileRepository;
 import com.example.enrollment.to.EnrollmentTo;
 import com.example.enrollment.util.EnrollmentHasher;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,10 +48,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         try {
             UserProfile profile = userProfileRepository.findByUname(enrollmentTo.getUname());
             if (null == profile) {
-                throw new EnrollmentException(HttpStatus.BAD_REQUEST.value(), "Invalid Email Address");
+                throw new EnrollmentException(HttpStatus.BAD_REQUEST.value(), "Invalid User ID");
             }
             userProfileRepository.deleteById(profile.getId());
         } catch (Exception e) {
+            if( e instanceof EnrollmentException){
+                throw (EnrollmentException)e;
+            }
             log.error(e.getMessage());
             e.printStackTrace();
             throw new EnrollmentException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error while deleting data. Please contact System Administrator");
@@ -66,10 +70,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             String hashedPassword = EnrollmentHasher.getSecurePassword(enrollmentTo.getPwd(), salt);
             UserProfile profile = userProfileRepository.findByUname(enrollmentTo.getUname());
             if (null == profile) {
-                throw new EnrollmentException(HttpStatus.BAD_REQUEST.value(), "Invalid Email Address");
+                throw new EnrollmentException(HttpStatus.BAD_REQUEST.value(), "Invalid User ID");
             }
             userProfileRepository.updatePassword(hashedPassword, EnrollmentHasher.bytesToHex(salt), profile.getId());
         } catch (Exception e) {
+            if( e instanceof EnrollmentException){
+                throw (EnrollmentException)e;
+            }
             log.error(e.getMessage());
             e.printStackTrace();
             throw new EnrollmentException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error while persisting data. Please contact System Administrator");
@@ -81,9 +88,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public ResponseEntity<EnrollmentResponse> updateProfile(EnrollmentTo enrollmentTo) throws EnrollmentException {
 
         try {
-        	UserProfile profile = userProfileRepository.findByUname(enrollmentTo.getUname());
+            UserProfile profile = userProfileRepository.findByUname(enrollmentTo.getUname());
             if (null == profile) {
-                throw new EnrollmentException(HttpStatus.BAD_REQUEST.value(), "Invalid Email Address");
+                throw new EnrollmentException(HttpStatus.BAD_REQUEST.value(), "Invalid User ID");
             }
             profile.setFname(null != enrollmentTo.getFname() ? enrollmentTo.getFname() : profile.getFname());
             profile.setLname(null != enrollmentTo.getLname() ? enrollmentTo.getLname() : profile.getLname());
@@ -92,6 +99,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             profile.setAge(null != enrollmentTo.getDob() ? getAge(enrollmentTo) : profile.getAge());
             userProfileRepository.save(profile);
         } catch (Exception e) {
+            if( e instanceof EnrollmentException){
+                throw (EnrollmentException)e;
+            }
             log.error(e.getMessage());
             e.printStackTrace();
             throw new EnrollmentException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error while persisting data. Please contact System Administrator");
@@ -99,8 +109,35 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return prepareResponse();
     }
 
+    @Override
+    public ResponseEntity<EnrollmentResponse> viewProfile(EnrollmentTo enrollmentTo) throws EnrollmentException {
+        EnrollmentTo returnProfile = new EnrollmentTo();
+        try {
+            UserProfile profile = userProfileRepository.findByUname(enrollmentTo.getUname());
+            if (null == profile) {
+                throw new EnrollmentException(HttpStatus.BAD_REQUEST.value(), "Invalid User ID");
+            }
+
+            BeanUtils.copyProperties(profile,returnProfile);
+
+        } catch (Exception e) {
+            if( e instanceof EnrollmentException){
+                throw (EnrollmentException)e;
+            }
+            log.error(e.getMessage());
+            e.printStackTrace();
+            throw new EnrollmentException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error while fetching data. Please contact System Administrator");
+        }
+        return prepareResponseWithProfile(returnProfile);
+    }
+
     private static ResponseEntity<EnrollmentResponse> prepareResponse() {
         EnrollmentResponse enrollmentResponse = new EnrollmentResponse("Success", null);
+        return new ResponseEntity<>(enrollmentResponse, HttpStatus.OK);
+    }
+
+    private static ResponseEntity<EnrollmentResponse> prepareResponseWithProfile(EnrollmentTo enrollmentTo) {
+        EnrollmentResponse enrollmentResponse = new EnrollmentResponse("Success", null, enrollmentTo);
         return new ResponseEntity<>(enrollmentResponse, HttpStatus.OK);
     }
 

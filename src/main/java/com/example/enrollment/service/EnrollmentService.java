@@ -14,4 +14,6 @@ public interface EnrollmentService {
     ResponseEntity<EnrollmentResponse> updatePassword(EnrollmentTo enrollmentTo) throws EnrollmentException;
 
     ResponseEntity<EnrollmentResponse> updateProfile(EnrollmentTo enrollmentTo) throws  EnrollmentException;
+
+    ResponseEntity<EnrollmentResponse> viewProfile(EnrollmentTo enrollmentTo) throws  EnrollmentException;
 }

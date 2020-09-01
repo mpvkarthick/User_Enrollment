@@ -23,7 +23,7 @@ public class EnrollmentController extends BaseController {
     @Autowired
     private EnrollmentService enrollmentService;
 
-    @RequestMapping(value = "/profile/", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/profile/", method = RequestMethod.POST)
     public ResponseEntity<EnrollmentResponse>  createProfile(@Valid @RequestBody EnrollmentRequest enrollmentRequest) throws EnrollmentException{
         EnrollmentTo enrollmentTo =  new EnrollmentTo();
         BeanUtils.copyProperties(enrollmentRequest,enrollmentTo);
@@ -31,7 +31,7 @@ public class EnrollmentController extends BaseController {
     }
 
 
-    @RequestMapping(value = "/profile/", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/profile/", method = RequestMethod.PUT)
     public ResponseEntity<EnrollmentResponse>  updateProfile(@Valid @RequestBody EnrollmentUpdateRequest enrollmentRequest, @NotBlank @RequestParam(value="uname",required =true) String uname) throws EnrollmentException{
         EnrollmentTo enrollmentTo =  new EnrollmentTo();
         BeanUtils.copyProperties(enrollmentRequest,enrollmentTo);
@@ -39,19 +39,26 @@ public class EnrollmentController extends BaseController {
         return enrollmentService.updateProfile(enrollmentTo);
     }
 
-    @RequestMapping(value = "/profile/", method = RequestMethod.DELETE, produces = "application/json")
+    @RequestMapping(value = "/profile/", method = RequestMethod.DELETE)
     public ResponseEntity<EnrollmentResponse>  deleteProfile(@NotBlank @RequestParam(value="uname",required =true) String uname) throws EnrollmentException{
         EnrollmentTo enrollmentTo =  new EnrollmentTo();
         enrollmentTo.setUname(uname);
         return enrollmentService.deleteProfile(enrollmentTo);
     }
 
-    @RequestMapping(value = "/profile/creds/", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/profile/creds/", method = RequestMethod.PUT)
     public ResponseEntity<EnrollmentResponse>  updatePassword(@Valid @RequestBody EnrollmentCredsRequest enrollmentRequest, @NotBlank @RequestParam(value="uname",required =true) String uname) throws EnrollmentException{
         EnrollmentTo enrollmentTo =  new EnrollmentTo();
         BeanUtils.copyProperties(enrollmentRequest,enrollmentTo);
         enrollmentTo.setUname(uname);
         return enrollmentService.updateProfile(enrollmentTo);
+    }
+
+    @RequestMapping(value = "/profile/", method = RequestMethod.GET)
+    public ResponseEntity<EnrollmentResponse>  viewProfile(@NotBlank @RequestParam(value="uname",required =true) String uname) throws EnrollmentException{
+        EnrollmentTo enrollmentTo =  new EnrollmentTo();
+        enrollmentTo.setUname(uname);
+        return enrollmentService.viewProfile(enrollmentTo);
     }
 
 }
